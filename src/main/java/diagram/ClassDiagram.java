@@ -51,7 +51,7 @@ public class ClassDiagram {
                         .append(visibilitySymbol)
                         .append(" ");
                 if (method.isStatic) {
-                    sb.append("{static} "); // 静态方法标记
+                    sb.append("{static} ");
                 }
                 sb.append(method.name)
                         .append("(")
