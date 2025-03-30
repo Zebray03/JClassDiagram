@@ -15,10 +15,11 @@ public class ClassDiagramGenerator {
         ClassDiagram diagram = new ClassDiagram();
 
         cu.findAll(ClassOrInterfaceDeclaration.class).forEach(cls -> {
+            boolean isInterface = cls.isInterface();
 
             ClassDiagram.ClassInfo classInfo = new ClassDiagram.ClassInfo();
             classInfo.name = cls.getNameAsString();
-            classInfo.isInterface = cls.isInterface();
+            classInfo.isInterface = isInterface;
             diagram.classes.add(classInfo);
 
             // ---------- Attribute ----------
@@ -26,12 +27,15 @@ public class ClassDiagramGenerator {
                 String visibility = field.getAccessSpecifier().toString().toLowerCase();
                 String type = field.getElementType().asString();
                 boolean isStatic = field.hasModifier(Modifier.Keyword.STATIC);
+
+                if (visibility.equals("none")) {
+                    visibility = isInterface ? "public" : "package private";
+                }
+
+                String finalVisibility = visibility;
                 field.getVariables().forEach(variable -> {
                     ClassDiagram.Attribute attr = new ClassDiagram.Attribute();
-                    attr.visibility = visibility;
-                    if(attr.visibility.equals("none")){
-                        attr.visibility = "package private";
-                    }
+                    attr.visibility = finalVisibility;
                     attr.type = type;
                     attr.name = variable.getNameAsString();
                     attr.isStatic = isStatic;
@@ -41,11 +45,14 @@ public class ClassDiagramGenerator {
 
             // ---------- Method ----------
             cls.getMethods().forEach(method -> {
-                ClassDiagram.Method methodInfo = new ClassDiagram.Method();
-                methodInfo.visibility = method.getAccessSpecifier().toString().toLowerCase();
-                if(methodInfo.visibility.equals("none")){
-                    methodInfo.visibility = "package private";
+                String visibility = method.getAccessSpecifier().toString().toLowerCase();
+
+                if (visibility.equals("none")) {
+                    visibility = isInterface ? "public" : "package private";
                 }
+
+                ClassDiagram.Method methodInfo = new ClassDiagram.Method();
+                methodInfo.visibility = visibility;
                 methodInfo.returnType = method.getType().asString();
                 methodInfo.name = method.getNameAsString();
                 methodInfo.isStatic = method.hasModifier(Modifier.Keyword.STATIC);
