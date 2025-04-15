@@ -58,7 +58,16 @@ public class MethodParser {
     private boolean isValidDependency(String source, String target, ClassDiagram diagram) {
         return !TypeExtractor.isBuiltInType(target)
                 && !source.equals(target)
-                && !hasAssociation(source, target, diagram);
+                && !hasAssociation(source, target, diagram)
+                && !hasExistingDependency(source, target, diagram); // 检查依赖是否已存在
+    }
+
+    // 检查是否已经存在相同的依赖关系
+    private boolean hasExistingDependency(String source, String target, ClassDiagram diagram) {
+        return diagram.getRelationships().stream()
+                .anyMatch(rel -> rel.getSource().equals(source)
+                        && rel.getTarget().equals(target)
+                        && rel.getType().equals("DEPENDENCY"));
     }
 
     private boolean hasAssociation(String source, String target, ClassDiagram diagram) {

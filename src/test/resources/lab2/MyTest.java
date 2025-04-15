@@ -1,21 +1,9 @@
-import java.util.*;
+package lab2;
 
-public class DataTypesExample {
-    private Map<String, Object> objectMap;
+public class Library2 {
+    public Map<Student, List<Book>, List<Teacher>> records;
 
-    // String类型
-    private String text;
+    private ArrayList<Manager> managers;
 
-    // 方法包含各种参数和返回类型
-    public Map<Long, Double> processNumbers(int a, Double b) {
-        return new HashMap<>();
-    }
-
-    public List<Character> convertChars(byte[] data) {
-        return new ArrayList<>();
-    }
-
-    public boolean validate(Short s, Boolean flag) {
-        return flag;
-    }
+    protected Library2 friendLibrary;
 }

@@ -37,7 +37,32 @@ public class ClassDiagram {
      * @return 返回代码中的“坏味道”
      */
     public List<String> getCodeSmells() {
-        return null;
+        List<String> codeSmells = new ArrayList<>();
+
+        // 检查每个类的 God Class, Lazy Class, Data Class
+        for (ClassInfo classInfo : this.getClasses()) {
+            // 检查 God Class
+            if (classInfo.getAttributes().size() >= 20 || classInfo.getMethods().size() >= 20) {
+                codeSmells.add("God Class: " + classInfo.getName());
+            }
+
+            // 检查 Lazy Class
+            if (classInfo.getAttributes().isEmpty() || classInfo.getMethods().size() <= 1) {
+                codeSmells.add("Lazy Class: " + classInfo.getName());
+            }
+
+            // 检查 Data Class
+            if (!classInfo.isGodClass() && !classInfo.isLazyClass()) {
+                boolean isDataClass = classInfo.getMethods().stream()
+                        .filter(method -> !method.isConstructor())  // 排除构造方法
+                        .allMatch(method -> method.getName().startsWith("get") || method.getName().startsWith("set"));
+                if (isDataClass) {
+                    codeSmells.add("Data Class: " + classInfo.getName());
+                }
+            }
+        }
+
+        return codeSmells;
     }
 
     /**

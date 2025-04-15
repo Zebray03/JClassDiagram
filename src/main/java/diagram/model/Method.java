@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Method {
-    public String visibility;
-    public String returnType;
-    public String name;
-    public List<Parameter> parameters = new ArrayList<>();
-    public boolean isStatic;
-    public boolean isAbstract;
-    public String genericParameters = "";
+    private String visibility;
+    private String returnType;
+    private String name;
+    private List<Parameter> parameters = new ArrayList<>();
+    private boolean isStatic;
+    private boolean isAbstract;
+    private String genericParameters = "";
+
+    // 新增字段：是否为构造方法
+    private boolean isConstructor;
+
+    // Getter 和 Setter 方法
 
     public String getVisibility() {
         return visibility;
@@ -66,5 +71,15 @@ public class Method {
 
     public void setGenericParameters(String genericParameters) {
         this.genericParameters = genericParameters;
+    }
+
+    // 新增isConstructor方法，用于判断是否为构造方法
+    public boolean isConstructor() {
+        return isConstructor;
+    }
+
+    // 新增setConstructor方法
+    public void setConstructor(boolean isConstructor) {
+        this.isConstructor = isConstructor;
     }
 }

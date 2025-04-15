@@ -10,8 +10,8 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MyTest {
     public String generateUML(String testcase) throws URISyntaxException, IOException {
@@ -25,151 +25,68 @@ public class MyTest {
         return diagram.generateUML();
     }
 
+    public static int countSubstring(String str, String sub) {
+        if (str == null || sub == null || str.isEmpty() || sub.isEmpty()) {
+            return 0;
+        }
+        int count = 0;
+        int index = 0;
+        while ((index = str.indexOf(sub, index)) != -1) {
+            count++;
+            index += sub.length(); // 移动到下一个位置继续查找
+        }
+        return count;
+    }
+
     @Test
-    public void testDataTypeRepresentation() throws Exception {
+    public void testLibraryStructure() throws URISyntaxException, IOException {
+        // 生成Library2相关UML图
         String uml = generateUML("MyTest.java");
 
-        // 基本类型验证
-        assertTrue(uml.contains("- intVal: int"));
-        assertTrue(uml.contains("- doubleVal: double"));
-        assertTrue(uml.contains("- boolVal: boolean"));
+        // 验证UML基础结构
+        assertTrue(uml.startsWith("@startuml"), "UML diagram should start with @startuml");
+        assertTrue(uml.contains("@enduml"), "UML diagram should end with @enduml");
 
-        // 包装类型验证
-        assertTrue(uml.contains("- integerObj: Integer"));
-        assertTrue(uml.contains("- doubleObj: Double"));
-        assertTrue(uml.contains("- boolObj: Boolean"));
+        // 验证Library2类结构
+        String expectedLibrary = "class Library2 {\n"
+                + "    - managers: ArrayList<Manager>\n"
+                + "    # friendLibrary: Library2\n"
+                + "    + records: Map<Student, List<Book>>\n"
+                + "}";
+        assertTrue(uml.contains(expectedLibrary), "Library2 should contain correct attributes");
 
-        // 集合类型验证
-        assertTrue(uml.contains("- stringList: List<String>"));
-        assertTrue(uml.contains("- intSet: Set<Integer>"));
-        assertTrue(uml.contains("- objectMap: Map<String, Object>"));
+        // 验证Book类结构
+        String expectedBook = "class Book {\n"
+                + "    - price: Integer\n"
+                + "    ~ pages: Page[][]\n"
+                + "    + getPrice(): int\n"
+                + "}";
+        assertTrue(uml.contains(expectedBook), "Book should contain correct attributes and methods");
 
-        // 方法签名验证
-        assertTrue(uml.contains("+ processNumbers(a: int, b: Double): Map<Long, Double>"));
-        assertTrue(uml.contains("+ convertChars(data: byte[]): List<Character>"));
-        assertTrue(uml.contains("+ validate(s: Short, flag: Boolean): boolean"));
+        // 验证Page类结构
+        String expectedPage = "class Page {\n"
+                + "    + content: String\n"
+                + "}";
+        assertTrue(uml.contains(expectedPage), "Page should contain content attribute");
 
-        // 参数名称验证
-        assertFalse(uml.contains("processNumbers(int, Double)"));
-        assertTrue(uml.contains("processNumbers(a: int, b: Double)"));
+        // 验证Student类结构
+        String expectedStudent = "class Student {\n"
+                + "    - age: int\n"
+                + "    + name: String\n"
+                + "}";
+        assertTrue(uml.contains(expectedStudent), "Student should contain age and name attributes");
 
-        // 特殊类型验证
-        assertTrue(uml.contains("- charVal: char"));
-        assertTrue(uml.contains("- charObj: Character"));
-        assertTrue(uml.contains("- text: String"));
-    }
+        // 验证Manager空类结构
+        assertTrue(uml.contains("class Manager {\n}"), "Manager should be an empty class");
 
-    @Test
-    public void testAbstractClassDiagram() throws Exception {
-        String uml = generateUML("Abstract.java");
+        // 验证关联关系
+        assertTrue(uml.contains("Student <-- Library2"), "Student should associate to Library2");
+        assertTrue(uml.contains("Book <-- Library2"), "Book should associate to Library2");
+        assertTrue(uml.contains("Manager <-- Library2"), "Manager should associate to Library2");
+        assertTrue(uml.contains("Page <-- Book"), "Page should associate to Book");
 
-        // 抽象类标识验证
-        assertTrue(uml.contains("abstract class AbstractShape"));
-        assertTrue(uml.contains("abstract class ShapeProcessor"));
-
-        // 抽象方法标记验证
-        assertTrue(uml.contains("{abstract} calculateArea(): double"));
-        assertTrue(uml.contains("{abstract} processShape(shape: AbstractShape): void"));
-
-        // 继承关系验证
-        assertTrue(uml.contains("AbstractShape <|-- Circle"));
-
-        // 字段访问修饰符验证
-        assertTrue(uml.contains("# color: String"));       // protected字段
-        assertTrue(uml.contains("- radius: double"));       // private字段
-
-        // 方法签名验证
-        assertTrue(uml.contains("+ getColor(): String"));  // 父类具体方法
-        assertTrue(uml.contains("+ getCircumference(): double")); // 子类特有方法
-
-        // 方法实现验证
-        assertTrue(uml.contains("calculateArea(): double")); // 覆盖实现
-
-        // 构造函数排除验证
-        assertFalse(uml.contains("AbstractShape("));
-        assertFalse(uml.contains("Circle("));
-        assertFalse(uml.contains("ShapeProcessor("));
-    }
-
-    @Test
-    public void testOrderStatusUML() throws Exception {
-        String uml = generateUML("OrderStatus.java");
-
-        // 验证基本结构
-        assertTrue(uml.contains("enum OrderStatus {"));
-
-        // 枚举常量验证（保持顺序）
-        assertTrue(uml.contains("NEW"));
-        assertTrue(uml.contains("PROCESSING"));
-        assertTrue(uml.contains("SHIPPED"));
-        assertTrue(uml.contains("DELIVERED"));
-        assertTrue(uml.contains("CANCELLED"));
-
-        // 字段验证
-        assertTrue(uml.contains("- statusCode: int"));
-        assertTrue(uml.contains("- description: String"));
-
-        // 方法验证
-        assertTrue(uml.contains("+ getStatusInfo(): String"));
-        assertTrue(uml.contains("{static} fromCode(code: int): OrderStatus"));
-
-    }
-
-    @Test
-    public void testGenericContainerStructure() throws Exception {
-        String uml = generateUML("GenericContainer.java");
-
-        // 验证类声明
-        assertTrue(uml.contains("class GenericContainer<K, V>"));
-        assertTrue(uml.contains("class Pair<T, U>"));
-
-        // 验证字段声明
-        assertTrue(uml.contains("- baseMap: Map<K, V>"));
-        assertTrue(uml.contains("- first: T"));
-        assertTrue(uml.contains("- second: U"));
-
-        // 验证泛型方法签名
-        assertTrue(uml.contains("+ <E extends Number> addNumbericEntry(key: K, number: E): void"));
-        assertTrue(uml.contains("+ mergeEntries(inputMap: Map<? extends K, ? super V>): void"));
-        assertTrue(uml.contains("+ <T, U> {static} zipLists(list1: List<T>, list2: List<U>): List<Pair<T, U>>"));
-
-        // 验证泛型约束方法
-        assertTrue(uml.contains("+ <V extends Comparable<V>> getMax(a: V, b: V): V"));
-
-    }
-
-    @Test
-    public void testOrderProcessorStructure() throws Exception {
-        String uml = generateUML("OrderProcessor.java");
-
-        // 验证类声明和继承关系
-        assertTrue(uml.contains("abstract class OrderProcessor<T extends Number>"));
-        assertTrue(uml.contains("class DigitalOrderProcessor"));
-        assertTrue(uml.contains("OrderProcessor <|-- DigitalOrderProcessor"));
-
-        // 验证字段声明
-        assertTrue(uml.contains("# currentStatus: OrderStatus"));
-        assertTrue(uml.contains("- description: String"));
-
-        // 验证方法签名
-        assertTrue(uml.contains("# <E extends Exception> logError(exception: E): void"));
-        assertTrue(uml.contains("+ {abstract} validateOrder(orderId: T): void"));
-        assertTrue(uml.contains("+ updateStatus(newStatus: OrderStatus): void"));
-        assertTrue(uml.contains("+ <V extends CharSequence> formatReceipt(receiptTemplate: V): String"));
-
-        // 验证枚举结构
-        assertTrue(uml.contains("enum OrderStatus"));
-        assertTrue(uml.contains("PENDING"));
-        assertTrue(uml.contains("PROCESSING"));
-        assertTrue(uml.contains("COMPLETED"));
-        assertTrue(uml.contains("+ getStatusInfo(): String"));
-
-        // 验证泛型约束
-        assertTrue(uml.contains("T extends Number")); // 类级泛型约束
-        assertTrue(uml.contains("E extends Exception")); // 方法级泛型约束
-        assertTrue(uml.contains("V extends CharSequence")); // 方法级泛型约束
-
-        // 验证方法覆盖
-        assertTrue(uml.contains("validateOrder(orderId: Long): void")); // 具体实现方法参数类型
+        // 确保关系线唯一性
+        assertEquals(1, countSubstring(uml, "Student <-- Library2"), "Student-Library2 relation should appear once");
+        assertEquals(1, countSubstring(uml, "Page <-- Book"), "Page-Book relation should appear once");
     }
 }

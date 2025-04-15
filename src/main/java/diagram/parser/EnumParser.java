@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 public class EnumParser {
     private final MethodParser methodParser = new MethodParser();
+
     public void parse(EnumDeclaration enumDecl, ClassInfo classInfo, ClassDiagram diagram) {
         classInfo.setName(enumDecl.getNameAsString());
         classInfo.setEnum(true);
@@ -35,8 +36,10 @@ public class EnumParser {
         enumDecl.getFields().forEach(field -> {
             String type = TypeUtils.fixGenericTypeFormat(field.getCommonType().asString());
             List<String> customTypes = TypeExtractor.extractCustomTypes(type);
+
+            // 去重逻辑，检查是否已经存在相同关系
             customTypes.forEach(targetClass -> {
-                if (!classInfo.getName().equals(targetClass)) {
+                if (!classInfo.getName().equals(targetClass) && !hasExistingRelationship(classInfo.getName(), targetClass, diagram)) {
                     Relationship rel = new Relationship();
                     rel.setSource(classInfo.getName());
                     rel.setTarget(targetClass);
@@ -109,5 +112,11 @@ public class EnumParser {
 
             methodParser.parseMethodDependencies(method, classInfo, diagram);
         });
+    }
+
+    // 检查是否已经存在相同的关系
+    private boolean hasExistingRelationship(String source, String target, ClassDiagram diagram) {
+        return diagram.getRelationships().stream()
+                .anyMatch(rel -> rel.getSource().equals(source) && rel.getTarget().equals(target));
     }
 }

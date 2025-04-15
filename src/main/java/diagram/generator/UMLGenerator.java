@@ -83,6 +83,7 @@ public class UMLGenerator {
                 });
     }
 
+    // 修改 generateRelationshipUML，处理 ASSOCIATION 和 DEPENDENCY 关系
     private void generateRelationshipUML(StringBuilder sb, Relationship rel) {
         switch (rel.getType()) {
             case "EXTENDS":
@@ -90,6 +91,17 @@ public class UMLGenerator {
                 break;
             case "IMPLEMENTS":
                 sb.append(rel.getTarget()).append(" <|.. ").append(rel.getSource()).append("\n");
+                break;
+            case "DEPENDENCY":
+                // 处理依赖关系
+                sb.append(rel.getTarget()).append(" <.. ").append(rel.getSource()).append("\n");
+                break;
+            case "ASSOCIATION":
+                // 处理关联关系
+                sb.append(rel.getTarget()).append(" <-- ").append(rel.getSource()).append("\n");
+                break;
+            default:
+                // 其他类型的关系可以加入其他处理
                 break;
         }
     }

@@ -13,6 +13,13 @@ public class ClassInfo {
     public List<Attribute> attributes = new ArrayList<>();
     public List<Method> methods = new ArrayList<>();
 
+    // 新增字段，用于标识God Class、Lazy Class、Data Class
+    private boolean isGodClass;
+    private boolean isLazyClass;
+    private boolean isDataClass;
+
+    // Getter and Setter methods for the class fields
+
     public String getName() {
         return name;
     }
@@ -75,5 +82,31 @@ public class ClassInfo {
 
     public void setMethods(List<Method> methods) {
         this.methods = methods;
+    }
+
+    // Getter and Setter for isGodClass, isLazyClass, isDataClass
+
+    public boolean isGodClass() {
+        return isGodClass;
+    }
+
+    public void setGodClass(boolean isGodClass) {
+        this.isGodClass = isGodClass;
+    }
+
+    public boolean isLazyClass() {
+        return isLazyClass;
+    }
+
+    public void setLazyClass(boolean isLazyClass) {
+        this.isLazyClass = isLazyClass;
+    }
+
+    public boolean isDataClass() {
+        return isDataClass;
+    }
+
+    public void setDataClass(boolean isDataClass) {
+        this.isDataClass = isDataClass;
     }
 }
