@@ -6,7 +6,7 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import diagram.model.ClassInfo;
 import diagram.model.Relationship;
 import diagram.ClassDiagram;
-import diagram.utils.Type.TypeExtractor;
+import diagram.utils.Type.GenericUtils;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class MethodParser {
     }
 
     private void extractAndAddDependencies(String type, String sourceClass, ClassDiagram diagram) {
-        List<String> customTypes = TypeExtractor.extractCustomTypes(type);
+        List<String> customTypes = GenericUtils.extractCustomTypes(type);
         customTypes.forEach(targetClass -> {
             if (isValidDependency(sourceClass, targetClass, diagram)) {
                 Relationship rel = new Relationship();
@@ -55,7 +55,7 @@ public class MethodParser {
     }
 
     private boolean isValidDependency(String source, String target, ClassDiagram diagram) {
-        return !TypeExtractor.isBuiltInType(target)
+        return !GenericUtils.isBuiltInType(target)
                 && !source.equals(target)
                 && !hasAssociation(source, target, diagram)
                 && !hasExistingDependency(source, target, diagram); // 检查依赖是否已存在

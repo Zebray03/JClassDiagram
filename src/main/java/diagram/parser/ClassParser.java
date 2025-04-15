@@ -4,7 +4,7 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import diagram.ClassDiagram;
 import diagram.model.*;
-import diagram.utils.Type.TypeExtractor;
+import diagram.utils.Type.GenericUtils;
 import diagram.utils.Type.TypeUtils;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public class ClassParser {
     private void processFields(ClassOrInterfaceDeclaration cls, ClassInfo classInfo, ClassDiagram diagram) {
         cls.getFields().forEach(field -> {
             String type = TypeUtils.fixGenericTypeFormat(field.getCommonType().asString());
-            List<String> customTypes = TypeExtractor.extractCustomTypes(type);
+            List<String> customTypes = GenericUtils.extractCustomTypes(type);
 
             // 遍历并为每个泛型类型生成关系
             customTypes.forEach(targetClass -> {

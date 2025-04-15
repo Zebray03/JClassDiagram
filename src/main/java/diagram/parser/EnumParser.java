@@ -5,7 +5,7 @@ import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.Node;
 import diagram.ClassDiagram;
 import diagram.model.*;
-import diagram.utils.Type.TypeExtractor;
+import diagram.utils.Type.GenericUtils;
 import diagram.utils.Type.TypeUtils;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class EnumParser {
     private void processFields(EnumDeclaration enumDecl, ClassInfo classInfo, ClassDiagram diagram) {
         enumDecl.getFields().forEach(field -> {
             String type = TypeUtils.fixGenericTypeFormat(field.getCommonType().asString());
-            List<String> customTypes = TypeExtractor.extractCustomTypes(type);
+            List<String> customTypes = GenericUtils.extractCustomTypes(type);
 
             // 去重逻辑，检查是否已经存在相同关系
             customTypes.forEach(targetClass -> {

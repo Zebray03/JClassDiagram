@@ -1,7 +1,7 @@
 package lab2;
 
 public class Library2 {
-    public Map<Student, List<Book>, List<Teacher>> records;
+    public Map<Student, List<Book>> records;
 
     private ArrayList<Manager> managers;
 
