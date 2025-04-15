@@ -3,21 +3,22 @@ package diagram.parser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.Node;
-import diagram.model.Attribute;
-import diagram.model.ClassInfo;
-import diagram.model.Method;
-import diagram.model.Parameter;
+import diagram.ClassDiagram;
+import diagram.model.*;
+import diagram.utils.TypeExtractor;
 import diagram.utils.TypeUtils;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class EnumParser {
-    public void parse(EnumDeclaration enumDecl, ClassInfo classInfo) {
+    private final MethodParser methodParser = new MethodParser();
+    public void parse(EnumDeclaration enumDecl, ClassInfo classInfo, ClassDiagram diagram) {
         classInfo.setName(enumDecl.getNameAsString());
         classInfo.setEnum(true);
         processEnumConstants(enumDecl, classInfo);
-        processFields(enumDecl, classInfo);
-        processMethods(enumDecl, classInfo);
+        processFields(enumDecl, classInfo, diagram);
+        processMethods(enumDecl, classInfo, diagram);
     }
 
     private void processEnumConstants(EnumDeclaration enumDecl, ClassInfo classInfo) {
@@ -30,10 +31,21 @@ public class EnumParser {
         });
     }
 
-    private void processFields(EnumDeclaration enumDecl, ClassInfo classInfo) {
+    private void processFields(EnumDeclaration enumDecl, ClassInfo classInfo, ClassDiagram diagram) {
         enumDecl.getFields().forEach(field -> {
-            String visibility = field.getAccessSpecifier().toString().toLowerCase();
             String type = TypeUtils.fixGenericTypeFormat(field.getCommonType().asString());
+            List<String> customTypes = TypeExtractor.extractCustomTypes(type);
+            customTypes.forEach(targetClass -> {
+                if (!classInfo.getName().equals(targetClass)) {
+                    Relationship rel = new Relationship();
+                    rel.setSource(classInfo.getName());
+                    rel.setTarget(targetClass);
+                    rel.setType("ASSOCIATION");
+                    diagram.addRelationship(rel);
+                }
+            });
+
+            String visibility = field.getAccessSpecifier().toString().toLowerCase();
             boolean isStatic = field.hasModifier(Modifier.Keyword.STATIC);
 
             if ("none".equals(visibility)) {
@@ -52,7 +64,7 @@ public class EnumParser {
         });
     }
 
-    private void processMethods(EnumDeclaration enumDecl, ClassInfo classInfo) {
+    private void processMethods(EnumDeclaration enumDecl, ClassInfo classInfo, ClassDiagram diagram) {
         enumDecl.getMethods().forEach(method -> {
             // JavaParser 中枚举的 getMethods() 不包含构造函数，无需跳过
             // 处理可见性（枚举方法默认public）
@@ -94,6 +106,8 @@ public class EnumParser {
             });
 
             classInfo.getMethods().add(methodInfo);
+
+            methodParser.parseMethodDependencies(method, classInfo, diagram);
         });
     }
 }

@@ -2,22 +2,23 @@ package diagram.parser;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import diagram.model.Attribute;
-import diagram.model.ClassInfo;
-import diagram.model.Method;
-import diagram.model.Parameter;
+import diagram.ClassDiagram;
+import diagram.model.*;
+import diagram.utils.TypeExtractor;
 import diagram.utils.TypeUtils;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClassParser {
-    public void parse(ClassOrInterfaceDeclaration cls, ClassInfo classInfo) {
+    private final MethodParser methodParser = new MethodParser();
+    public void parse(ClassOrInterfaceDeclaration cls, ClassInfo classInfo,ClassDiagram diagram) {
         classInfo.setName(cls.getNameAsString());
         classInfo.setInterface(cls.isInterface());
         classInfo.setAbstract(cls.isAbstract());
         processTypeParameters(cls, classInfo);
-        processFields(cls, classInfo);
-        processMethods(cls, classInfo);
+        processFields(cls, classInfo, diagram);
+        processMethods(cls, classInfo, diagram);
     }
 
     private void processTypeParameters(ClassOrInterfaceDeclaration cls, ClassInfo classInfo) {
@@ -35,10 +36,21 @@ public class ClassParser {
         }
     }
 
-    private void processFields(ClassOrInterfaceDeclaration cls, ClassInfo classInfo) {
+    private void processFields(ClassOrInterfaceDeclaration cls, ClassInfo classInfo, ClassDiagram diagram) {
         cls.getFields().forEach(field -> {
-            String visibility = field.getAccessSpecifier().toString().toLowerCase();
             String type = TypeUtils.fixGenericTypeFormat(field.getCommonType().asString());
+            List<String> customTypes = TypeExtractor.extractCustomTypes(type);
+            customTypes.forEach(targetClass -> {
+                if (!classInfo.getName().equals(targetClass)) {
+                    Relationship rel = new Relationship();
+                    rel.setSource(classInfo.getName());
+                    rel.setTarget(targetClass);
+                    rel.setType("ASSOCIATION");
+                    diagram.addRelationship(rel);
+                }
+            });
+
+            String visibility = field.getAccessSpecifier().toString().toLowerCase();
             boolean isStatic = field.hasModifier(Modifier.Keyword.STATIC);
 
             if ("none".equals(visibility)) {
@@ -57,7 +69,7 @@ public class ClassParser {
         });
     }
 
-    private void processMethods(ClassOrInterfaceDeclaration cls, ClassInfo classInfo) {
+    private void processMethods(ClassOrInterfaceDeclaration cls, ClassInfo classInfo, ClassDiagram diagram) {
         cls.getMethods().forEach(method -> {
             String visibility = method.getAccessSpecifier().toString().toLowerCase();
             if (visibility.equals("none")) {
@@ -101,6 +113,8 @@ public class ClassParser {
             });
 
             classInfo.getMethods().add(methodInfo);
+
+            methodParser.parseMethodDependencies(method, classInfo, diagram);
         });
     }
 }

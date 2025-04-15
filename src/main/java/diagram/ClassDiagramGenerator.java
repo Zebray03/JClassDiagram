@@ -26,7 +26,7 @@ public class ClassDiagramGenerator {
         // 处理普通类/接口
         cu.findAll(ClassOrInterfaceDeclaration.class).forEach(cls -> {
             ClassInfo classInfo = new ClassInfo();
-            classParser.parse(cls, classInfo);
+            classParser.parse(cls, classInfo, diagram);
             relationParser.parseClassRelations(cls, classInfo, diagram);
             diagram.addClass(classInfo);
         });
@@ -34,7 +34,7 @@ public class ClassDiagramGenerator {
         // 处理枚举类
         cu.findAll(EnumDeclaration.class).forEach(enumDecl -> {
             ClassInfo classInfo = new ClassInfo();
-            enumParser.parse(enumDecl, classInfo);
+            enumParser.parse(enumDecl, classInfo, diagram);
             relationParser.parseEnumRelations(enumDecl, classInfo, diagram);
             diagram.addClass(classInfo);
         });
