@@ -2,12 +2,11 @@ package diagram.parser;
 
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import diagram.model.ClassInfo;
 import diagram.model.Relationship;
 import diagram.ClassDiagram;
-import diagram.utils.TypeExtractor;
+import diagram.utils.Type.TypeExtractor;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package diagram.utils;
+package diagram.utils.Type;
 
 public class TypeUtils {
     public static String fixGenericTypeFormat(String type) {

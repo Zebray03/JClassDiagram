@@ -4,8 +4,8 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import diagram.ClassDiagram;
 import diagram.model.*;
-import diagram.utils.TypeExtractor;
-import diagram.utils.TypeUtils;
+import diagram.utils.Type.TypeExtractor;
+import diagram.utils.Type.TypeUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;

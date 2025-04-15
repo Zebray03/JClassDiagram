@@ -13,6 +13,8 @@ public class ClassInfo {
     public List<Attribute> attributes = new ArrayList<>();
     public List<Method> methods = new ArrayList<>();
 
+    private List<ClassInfo> children = new ArrayList<>();
+
     // 新增字段，用于标识God Class、Lazy Class、Data Class
     private boolean isGodClass;
     private boolean isLazyClass;
@@ -82,6 +84,14 @@ public class ClassInfo {
 
     public void setMethods(List<Method> methods) {
         this.methods = methods;
+    }
+
+    public List<ClassInfo> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<ClassInfo> children) {
+        this.children = children;
     }
 
     // Getter and Setter for isGodClass, isLazyClass, isDataClass
