@@ -11,7 +11,10 @@ import diagram.parser.EnumParser;
 import diagram.parser.RelationParser;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClassDiagramGenerator {
     private final ClassParser classParser = new ClassParser();
@@ -20,14 +23,34 @@ public class ClassDiagramGenerator {
     private final UMLGenerator umlGenerator = new UMLGenerator();
 
     public ClassDiagram parse(Path sourcePath) throws IOException {
-        CompilationUnit cu = StaticJavaParser.parse(sourcePath);
         ClassDiagram diagram = new ClassDiagram();
+
+        if (Files.isDirectory(sourcePath)) {
+            Files.walkFileTree(sourcePath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    if (file.toString().endsWith(".java")) {
+                        parseSingleFile(file, diagram);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } else {
+            if (sourcePath.toString().endsWith(".java")) {
+                parseSingleFile(sourcePath, diagram);
+            }
+        }
+        return diagram;
+    }
+
+    private void parseSingleFile(Path filePath, ClassDiagram diagram) throws IOException {
+        CompilationUnit cu = StaticJavaParser.parse(filePath);
 
         // 处理普通类/接口
         cu.findAll(ClassOrInterfaceDeclaration.class).forEach(cls -> {
             ClassInfo classInfo = new ClassInfo();
             classParser.parse(cls, classInfo, diagram);
-            relationParser.parseClassRelations(cls, classInfo, diagram);
+            relationParser.parse(cls, classInfo, diagram);
             diagram.addClass(classInfo);
         });
 
@@ -38,8 +61,6 @@ public class ClassDiagramGenerator {
             relationParser.parseEnumRelations(enumDecl, classInfo, diagram);
             diagram.addClass(classInfo);
         });
-
-        return diagram;
     }
 
     public String generate(ClassDiagram diagram) {

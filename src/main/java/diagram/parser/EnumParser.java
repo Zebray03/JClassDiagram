@@ -110,7 +110,7 @@ public class EnumParser {
 
             classInfo.getMethods().add(methodInfo);
 
-            methodParser.parseMethodDependencies(method, classInfo, diagram);
+            methodParser.parse(method, classInfo, diagram);
         });
     }
 

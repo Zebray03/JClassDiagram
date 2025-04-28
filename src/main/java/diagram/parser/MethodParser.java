@@ -11,7 +11,7 @@ import diagram.utils.Type.GenericUtils;
 import java.util.List;
 
 public class MethodParser {
-    public void parseMethodDependencies(CallableDeclaration<?> method, ClassInfo classInfo, ClassDiagram diagram) {
+    public void parse(CallableDeclaration<?> method, ClassInfo classInfo, ClassDiagram diagram) {
         String sourceClass = classInfo.getName();
 
         // 1. 解析返回类型（仅处理方法，构造函数没有返回类型）

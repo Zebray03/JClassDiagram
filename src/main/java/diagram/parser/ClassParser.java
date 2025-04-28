@@ -17,15 +17,14 @@ public class ClassParser {
         classInfo.setName(cls.getNameAsString());
         classInfo.setInterface(cls.isInterface());
         classInfo.setAbstract(cls.isAbstract());
-        processTypeParameters(cls, classInfo);
-        processFields(cls, classInfo, diagram);
-        processMethods(cls, classInfo, diagram);
+        parseTypeParameters(cls, classInfo);
+        parseFields(cls, classInfo, diagram);
+        parseMethods(cls, classInfo, diagram);
 
-        // 类分析
         analyzeClass(cls, classInfo);
     }
 
-    private void processTypeParameters(ClassOrInterfaceDeclaration cls, ClassInfo classInfo) {
+    private void parseTypeParameters(ClassOrInterfaceDeclaration cls, ClassInfo classInfo) {
         if (!cls.getTypeParameters().isEmpty()) {
             String generics = cls.getTypeParameters().stream()
                     .map(tp -> {
@@ -40,7 +39,7 @@ public class ClassParser {
         }
     }
 
-    private void processFields(ClassOrInterfaceDeclaration cls, ClassInfo classInfo, ClassDiagram diagram) {
+    private void parseFields(ClassOrInterfaceDeclaration cls, ClassInfo classInfo, ClassDiagram diagram) {
         cls.getFields().forEach(field -> {
             String type = TypeUtils.fixGenericTypeFormat(field.getCommonType().asString());
             List<String> customTypes = GenericUtils.extractCustomTypes(type);
@@ -75,7 +74,7 @@ public class ClassParser {
         });
     }
 
-    private void processMethods(ClassOrInterfaceDeclaration cls, ClassInfo classInfo, ClassDiagram diagram) {
+    private void parseMethods(ClassOrInterfaceDeclaration cls, ClassInfo classInfo, ClassDiagram diagram) {
         cls.getMethods().forEach(method -> {
             String visibility = method.getAccessSpecifier().toString().toLowerCase();
 
@@ -134,7 +133,7 @@ public class ClassParser {
 
             classInfo.getMethods().add(methodInfo);
 
-            methodParser.parseMethodDependencies(method, classInfo, diagram);
+            methodParser.parse(method, classInfo, diagram);
         });
     }
 

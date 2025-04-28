@@ -28,7 +28,6 @@ public class ClassDiagram {
     }
 
     public String generateUML() {
-        // 委托给生成器，传递当前数据
         return new ClassDiagramGenerator().generate(this);
     }
 

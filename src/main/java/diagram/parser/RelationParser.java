@@ -7,7 +7,7 @@ import diagram.model.ClassInfo;
 import diagram.model.Relationship;
 
 public class RelationParser {
-    public void parseClassRelations(ClassOrInterfaceDeclaration cls, ClassInfo classInfo, ClassDiagram diagram) {
+    public void parse(ClassOrInterfaceDeclaration cls, ClassInfo classInfo, ClassDiagram diagram) {
         // 处理扩展类型（父类）
         cls.getExtendedTypes().forEach(parent -> {
             Relationship rel = new Relationship();
