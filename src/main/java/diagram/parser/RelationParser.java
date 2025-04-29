@@ -39,7 +39,7 @@ public class RelationParser {
                 .orElse(null);  // 如果找不到，返回null
     }
 
-    public void parseEnumRelations(EnumDeclaration enumDecl, ClassInfo classInfo, ClassDiagram diagram) {
+    public void parseForEnum(EnumDeclaration enumDecl, ClassInfo classInfo, ClassDiagram diagram) {
         enumDecl.getImplementedTypes().forEach(impl -> {
             Relationship rel = new Relationship();
             rel.setSource(classInfo.getName());

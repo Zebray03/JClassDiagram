@@ -2,19 +2,36 @@ package command;
 
 import diagram.ClassDiagram;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class CommandLineTool {
-    private ClassDiagram diagram;
+    private final ClassDiagram diagram;
+    private final Deque<Runnable> undoStack = new ArrayDeque<>();
+    private final CommandHandler[] handlers;
 
     public CommandLineTool(ClassDiagram diagram) {
         this.diagram = diagram;
+        this.handlers = new CommandHandler[]{
+                new AddHandler(diagram, undoStack),
+                new DeleteHandler(diagram, undoStack),
+                new ModifyHandler(diagram, undoStack),
+                new UndoHandler(undoStack),
+                new QueryHandler(diagram),
+                new SmellHandler(diagram)
+        };
     }
 
-    /**
-     * @param command 输入的命令
-     * @return 如果是查询性质语句，将查询的结果保存在返回值中。Undo语句可能返回的信息也保存在返回值中。
-     */
     public String execute(String command) {
-        // TODO: finish me
-        return "";
+        try {
+            for (CommandHandler handler : handlers) {
+                if (handler.canHandle(command)) {
+                    return handler.handle(command);
+                }
+            }
+            return "Unknown command: " + command;
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
     }
 }

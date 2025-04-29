@@ -13,8 +13,6 @@ import diagram.parser.RelationParser;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClassDiagramGenerator {
     private final ClassParser classParser = new ClassParser();
@@ -58,7 +56,7 @@ public class ClassDiagramGenerator {
         cu.findAll(EnumDeclaration.class).forEach(enumDecl -> {
             ClassInfo classInfo = new ClassInfo();
             enumParser.parse(enumDecl, classInfo, diagram);
-            relationParser.parseEnumRelations(enumDecl, classInfo, diagram);
+            relationParser.parseForEnum(enumDecl, classInfo, diagram);
             diagram.addClass(classInfo);
         });
     }
