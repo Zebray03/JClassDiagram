@@ -47,6 +47,7 @@ public class UMLGenerator {
 
     private void generateMethods(StringBuilder sb, ClassInfo cls) {
         cls.getMethods().stream()
+                .filter(method -> !method.isConstructor())
                 .sorted(Comparator.comparingInt(m -> TypeUtils.getVisibilityOrder(m.getVisibility())))
                 .forEach(method -> {
                     sb.append("    ")
@@ -83,7 +84,6 @@ public class UMLGenerator {
                 });
     }
 
-    // 修改 generateRelationshipUML，处理 ASSOCIATION 和 DEPENDENCY 关系
     private void generateRelationshipUML(StringBuilder sb, Relationship rel) {
         switch (rel.getType()) {
             case "EXTENDS":

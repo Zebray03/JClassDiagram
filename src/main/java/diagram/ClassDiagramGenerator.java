@@ -24,7 +24,7 @@ public class ClassDiagramGenerator {
         ClassDiagram diagram = new ClassDiagram();
 
         if (Files.isDirectory(sourcePath)) {
-            Files.walkFileTree(sourcePath, new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(sourcePath, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     if (file.toString().endsWith(".java")) {
@@ -44,7 +44,7 @@ public class ClassDiagramGenerator {
     private void parseSingleFile(Path filePath, ClassDiagram diagram) throws IOException {
         CompilationUnit cu = StaticJavaParser.parse(filePath);
 
-        // 处理普通类/接口
+        // 普通类/接口
         cu.findAll(ClassOrInterfaceDeclaration.class).forEach(cls -> {
             ClassInfo classInfo = new ClassInfo();
             classParser.parse(cls, classInfo, diagram);
@@ -52,7 +52,7 @@ public class ClassDiagramGenerator {
             diagram.addClass(classInfo);
         });
 
-        // 处理枚举类
+        // 枚举类
         cu.findAll(EnumDeclaration.class).forEach(enumDecl -> {
             ClassInfo classInfo = new ClassInfo();
             enumParser.parse(enumDecl, classInfo, diagram);

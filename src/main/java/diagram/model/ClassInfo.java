@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClassInfo {
-    public String name;
-    public boolean isInterface;
-    public boolean isEnum;
-    public boolean isAbstract;
-    public String genericParameters = "";
-    public List<String> enumConstants = new ArrayList<>();
-    public List<Attribute> attributes = new ArrayList<>();
-    public List<Method> methods = new ArrayList<>();
+    private String name;
+    private boolean isInterface;
+    private boolean isEnum;
+    private boolean isAbstract;
+    private String genericParameters = "";
+    private List<String> enumConstants = new ArrayList<>();
+    private List<Attribute> attributes = new ArrayList<>();
+    private List<Method> methods = new ArrayList<>();
+    private boolean hasConstructor;
     private List<ClassInfo> children = new ArrayList<>();
     private boolean isGodClass;
     private boolean isLazyClass;
@@ -80,6 +81,14 @@ public class ClassInfo {
 
     public void setMethods(List<Method> methods) {
         this.methods = methods;
+    }
+
+    public boolean hasConstructor() {
+        return hasConstructor;
+    }
+
+    public void setHasConstructor(boolean hasConstructor) {
+        this.hasConstructor = hasConstructor;
     }
 
     public List<ClassInfo> getChildren() {

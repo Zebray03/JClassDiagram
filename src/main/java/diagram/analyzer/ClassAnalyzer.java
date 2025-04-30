@@ -27,11 +27,14 @@ public class ClassAnalyzer implements Analyzer {
 
         // 检查 God Class
         if (classInfo.getAttributes().size() >= 20 || classInfo.getMethods().size() >= 20) {
+            classInfo.setGodClass(true);
             result.add("God Class: " + classInfo.getName());
         }
 
         // 检查 Lazy Class
-        if (classInfo.getAttributes().isEmpty() || classInfo.getMethods().size() <= 1) {
+        int activeMethodCount = classInfo.hasConstructor() ? classInfo.getMethods().size() - 1 : classInfo.getMethods().size();
+        if (classInfo.getAttributes().isEmpty() || activeMethodCount <= 1) {
+            classInfo.setLazyClass(true);
             result.add("Lazy Class: " + classInfo.getName());
         }
 
@@ -41,6 +44,7 @@ public class ClassAnalyzer implements Analyzer {
                     .filter(method -> !method.isConstructor())  // 排除构造方法
                     .allMatch(method -> method.getName().startsWith("get") || method.getName().startsWith("set"));
             if (isDataClass) {
+                classInfo.setDataClass(true);
                 result.add("Data Class: " + classInfo.getName());
             }
         }

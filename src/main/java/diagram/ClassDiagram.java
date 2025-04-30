@@ -1,6 +1,7 @@
 package diagram;
 
 import diagram.analyzer.*;
+import diagram.analyzer.design_pattern_analyzer.DesignPatternAnalyzer;
 import diagram.model.ClassInfo;
 import diagram.model.Relationship;
 
@@ -20,7 +21,7 @@ public class ClassDiagram {
                 new ClassAnalyzer(),
                 new InheritanceTreeAnalyzer(),
                 new CircularDependencyAnalyzer(),
-                //new DesignPatternAnalyzer()
+                new DesignPatternAnalyzer()
         };
     }
 

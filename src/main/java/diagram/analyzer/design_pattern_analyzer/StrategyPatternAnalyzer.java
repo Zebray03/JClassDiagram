@@ -1,4 +1,4 @@
-package diagram.detector;
+package diagram.analyzer.design_pattern_analyzer;
 
 import diagram.ClassDiagram;
 import diagram.model.ClassInfo;
@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StrategyPatternDetector implements PatternDetector{
+public class StrategyPatternAnalyzer implements PatternAnalyzer {
     @Override
-    public List<String> detect(ClassDiagram diagram) {
+    public List<String> analyze(ClassDiagram diagram) {
         List<String> results = new ArrayList<>();
         detectStrategyInterface(diagram).forEach(strategy -> {
             List<ClassInfo> concreteStrategies = getConcreteStrategies(strategy, diagram);
             if (concreteStrategies.size() >= 2 && hasContextClass(strategy, diagram)) {
-                results.add("Possible Design Patterns: Strategy Pattern - " + strategy.getName());
+                results.add("Possible Design Patterns: Strategy Pattern");
             }
         });
         return results;
@@ -39,7 +39,7 @@ public class StrategyPatternDetector implements PatternDetector{
 
     private boolean hasContextClass(ClassInfo strategy, ClassDiagram diagram) {
         return diagram.getRelationships().stream()
-                .anyMatch(r -> r.getType().equals("ASSOCIATION") &&
+                .anyMatch(r -> (r.getType().equals("ASSOCIATION") || r.getType().equals("DEPENDENCY")) &&
                         r.getTarget().equals(strategy.getName()));
     }
 }

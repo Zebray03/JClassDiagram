@@ -1,4 +1,4 @@
-package diagram.detector;
+package diagram.analyzer.design_pattern_analyzer;
 
 import diagram.ClassDiagram;
 import diagram.model.ClassInfo;
@@ -6,13 +6,15 @@ import diagram.model.ClassInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SingletonPatternDetector implements PatternDetector {
+public class SingletonPatternAnalyzer implements PatternAnalyzer {
+
     @Override
-    public List<String> detect(ClassDiagram diagram) {
+    public List<String> analyze(ClassDiagram diagram) {
         List<String> results = new ArrayList<>();
         for (ClassInfo cls : diagram.getClasses()) {
             if (isSingleton(cls, diagram)) {
-                results.add("Possible Design Patterns: Singleton Pattern - " + cls.getName());
+                results.add("Possible Design Patterns: Singleton Pattern");
+                break;
             }
         }
         return results;
@@ -20,14 +22,18 @@ public class SingletonPatternDetector implements PatternDetector {
 
     private boolean isSingleton(ClassInfo cls, ClassDiagram diagram) {
         // 检查是否有子类
-        if (!cls.getChildren().isEmpty()) return false;
+        if (!cls.getChildren().isEmpty()) {
+            return false;
+        }
 
         // 检查构造函数
         boolean hasPrivateConstructor = cls.getMethods().stream()
                 .anyMatch(m -> m.isConstructor() && "private".equals(m.getVisibility()));
         boolean hasPublicConstructor = cls.getMethods().stream()
                 .anyMatch(m -> m.isConstructor() && "public".equals(m.getVisibility()));
-        if (hasPublicConstructor) return false;
+        if (hasPublicConstructor) {
+            return false;
+        }
 
         // 检查静态实例字段
         boolean hasStaticInstance = cls.getAttributes().stream()
