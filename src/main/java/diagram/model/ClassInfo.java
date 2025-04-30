@@ -12,15 +12,11 @@ public class ClassInfo {
     public List<String> enumConstants = new ArrayList<>();
     public List<Attribute> attributes = new ArrayList<>();
     public List<Method> methods = new ArrayList<>();
-
     private List<ClassInfo> children = new ArrayList<>();
-
-    // 新增字段，用于标识God Class、Lazy Class、Data Class
     private boolean isGodClass;
     private boolean isLazyClass;
     private boolean isDataClass;
-
-    // Getter and Setter methods for the class fields
+    private List<String> implementedTypes = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -94,8 +90,6 @@ public class ClassInfo {
         this.children = children;
     }
 
-    // Getter and Setter for isGodClass, isLazyClass, isDataClass
-
     public boolean isGodClass() {
         return isGodClass;
     }
@@ -118,5 +112,9 @@ public class ClassInfo {
 
     public void setDataClass(boolean isDataClass) {
         this.isDataClass = isDataClass;
+    }
+
+    public List<String> getImplementedTypes() {
+        return implementedTypes;
     }
 }

@@ -1,11 +1,15 @@
 package diagram;
 
+import diagram.detector.PatternDetector;
+import diagram.detector.SingletonPatternDetector;
+import diagram.detector.StrategyPatternDetector;
 import diagram.model.ClassInfo;
 import diagram.model.Relationship;
 import diagram.utils.CircularDependencies.CircularDependenciesUtils;
 import diagram.utils.InheritanceTree.InheritanceTreeUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ClassDiagram {
     private final List<ClassInfo> classes = new ArrayList<>();
@@ -20,11 +24,11 @@ public class ClassDiagram {
     }
 
     public List<ClassInfo> getClasses() {
-        return new ArrayList<>(classes); // 返回不可变副本以保证封装性
+        return classes;
     }
 
     public List<Relationship> getRelationships() {
-        return new ArrayList<>(relationships);
+        return relationships;
     }
 
     public String generateUML() {
@@ -50,6 +54,15 @@ public class ClassDiagram {
         }
 
         detectCircularDependencies(codeSmells);
+
+        List<PatternDetector> detectors = List.of(
+                new SingletonPatternDetector(),
+                new StrategyPatternDetector()
+        );
+
+        codeSmells.addAll(detectors.stream()
+                .flatMap(d -> d.detect(this).stream())
+                .toList());
 
         return codeSmells;
     }

@@ -103,7 +103,9 @@ class AddHandler implements CommandHandler {
                         "add function (?<target>\\w+)\\s+" +
                                 "-n (?<name>\\w+)\\s+" +
                                 "-t (?<ret>[\\w<>]+)\\s*" +
-                                "(?:--params=(?<params>[\\w:,<>]+)\\s*)?(?:--access=([+#~-])?\\s*)?(?:--static)?(?:--abstract)?")
+                                "(?:--params=(?<params>[\\w:,<>]+)\\s*)?" +
+                                "(?:--access=(?<access>[+#~-])?\\s*)?" +
+                                "(?:--static)?(?:--abstract)?")
                 .matcher(command);
         if (!m.find()) throw new IllegalArgumentException("Invalid method command");
 
@@ -111,7 +113,7 @@ class AddHandler implements CommandHandler {
         Method method = new Method();
         method.setName(m.group("name"));
         method.setReturnType(m.group("ret"));
-        method.setVisibility(CommandUtils.parseVisibility(m.group("access")));
+        method.setVisibility(command.contains("--access") ? CommandUtils.parseVisibility(m.group("access")) : "private");
         method.setStatic(command.contains("--static"));
         method.setAbstract(command.contains("--abstract"));
 

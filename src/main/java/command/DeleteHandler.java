@@ -28,7 +28,7 @@ public class DeleteHandler implements CommandHandler {
 
     @Override
     public String handle(String command) {
-        if (command.matches("delete -(c|i|e)\\s+.+")) {
+        if (command.matches("delete -([cie])\\s+.+")) {
             return deleteClass(command);
         } else if (command.matches("delete field\\s+.+")) {
             return deleteField(command);
@@ -44,15 +44,18 @@ public class DeleteHandler implements CommandHandler {
 
         String name = m.group("name");
         ClassInfo cls = CommandUtils.findClass(diagram, name);
-        List<Relationship> relationships = diagram.getRelationships().stream()
+        List<Relationship> delRelationshipList = diagram.getRelationships().stream()
                 .filter(r -> r.getSource().equals(name) || r.getTarget().equals(name))
                 .toList();
 
         diagram.getClasses().remove(cls);
+        diagram.getRelationships().removeAll(delRelationshipList);
+
         undoStack.push(() -> {
             diagram.addClass(cls);
-            diagram.getRelationships().addAll(relationships);
+            diagram.getRelationships().addAll(delRelationshipList);
         });
+
         return "Deleted class: " + name;
     }
 

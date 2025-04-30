@@ -48,4 +48,11 @@ public class RelationParser {
             diagram.addRelationship(rel);
         });
     }
+
+    public void parseClassRelations(ClassOrInterfaceDeclaration cls, ClassInfo classInfo, ClassDiagram diagram) {
+        // 在解析实现关系时记录接口
+        cls.getImplementedTypes().forEach(impl -> {
+            classInfo.getImplementedTypes().add(impl.getNameAsString());
+        });
+    }
 }

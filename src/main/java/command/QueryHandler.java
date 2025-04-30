@@ -110,6 +110,6 @@ public class QueryHandler implements CommandHandler{
             case "DEPENDENCY" -> " <.. ";
             default -> " -- ";
         };
-        return rel.getSource() + arrow + rel.getTarget();
+        return rel.getTarget() + arrow + rel.getSource();
     }
 }
