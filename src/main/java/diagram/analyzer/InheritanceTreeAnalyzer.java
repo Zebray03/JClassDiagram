@@ -7,7 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InheritanceTreeAnalyzer implements Analyzer {
-    boolean active = true;
+    boolean active;
+
+    public InheritanceTreeAnalyzer(boolean _active) {
+        active = _active;
+    }
 
     @Override
     public List<String> analyze(ClassDiagram diagram) {

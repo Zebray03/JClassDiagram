@@ -7,7 +7,11 @@ import diagram.model.Relationship;
 import java.util.*;
 
 public class CircularDependencyAnalyzer implements Analyzer {
-    boolean active = true;
+    boolean active;
+
+    public CircularDependencyAnalyzer(boolean _active) {
+        active = _active;
+    }
 
     @Override
     public List<String> analyze(ClassDiagram diagram) {

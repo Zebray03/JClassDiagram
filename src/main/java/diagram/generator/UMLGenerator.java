@@ -3,7 +3,7 @@ package diagram.generator;
 import diagram.ClassDiagram;
 import diagram.model.ClassInfo;
 import diagram.model.Relationship;
-import diagram.utils.Type.TypeUtils;
+import diagram.parser.utils.TypeUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;

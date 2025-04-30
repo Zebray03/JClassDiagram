@@ -11,8 +11,8 @@ public class DesignPatternAnalyzer implements Analyzer {
 
     PatternAnalyzer[] patternAnalyzers;
 
-    public DesignPatternAnalyzer() {
-        active = true;
+    public DesignPatternAnalyzer(boolean _active) {
+        active = _active;
         patternAnalyzers = new PatternAnalyzer[]{
                 new SingletonPatternAnalyzer(),
                 new StrategyPatternAnalyzer()

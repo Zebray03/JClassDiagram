@@ -6,7 +6,7 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import diagram.model.ClassInfo;
 import diagram.model.Relationship;
 import diagram.ClassDiagram;
-import diagram.utils.Type.GenericUtils;
+import diagram.parser.utils.GenericUtils;
 
 import java.util.List;
 

@@ -1,9 +1,7 @@
-package diagram.utils.Type;
+package diagram.parser.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class GenericUtils {
     private static final String BUILT_IN_TYPES = "String|int|boolean|List|Map|Set|Optional|ArrayList|HashMap";
