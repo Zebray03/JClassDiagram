@@ -37,7 +37,7 @@ public class EnumParser {
             String type = TypeUtils.fixGenericTypeFormat(field.getCommonType().asString());
             List<String> customTypes = GenericUtils.extractCustomTypes(type);
 
-            // 去重逻辑，检查是否已经存在相同关系
+            // 检查是否已经存在相同关系
             customTypes.forEach(targetClass -> {
                 if (!classInfo.getName().equals(targetClass) && !hasExistingRelationship(classInfo.getName(), targetClass, diagram)) {
                     Relationship rel = new Relationship();
@@ -114,7 +114,6 @@ public class EnumParser {
         });
     }
 
-    // 检查是否已经存在相同的关系
     private boolean hasExistingRelationship(String source, String target, ClassDiagram diagram) {
         return diagram.getRelationships().stream()
                 .anyMatch(rel -> rel.getSource().equals(source) && rel.getTarget().equals(target));

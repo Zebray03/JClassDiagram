@@ -106,7 +106,7 @@ public class ClassParser {
                 methodInfo.getParameters().add(paramModel);
             });
 
-            // 构造方法不能是static/abstract
+            // 构造方法不能修饰为static/abstract
             methodInfo.setStatic(false);
             methodInfo.setAbstract(false);
 
@@ -134,7 +134,7 @@ public class ClassParser {
 
             methodInfo.setVisibility(visibility);
 
-            // 修复返回类型的泛型格式
+            // 修复泛型格式
             String returnType = TypeUtils.fixGenericTypeFormat(method.getType().asString());
             methodInfo.setReturnType(returnType);
 
@@ -156,7 +156,7 @@ public class ClassParser {
                 methodInfo.setGenericParameters(genericParams);
             }
 
-            // 处理方法参数（修复参数类型格式）
+            // 处理方法参数
             method.getParameters().forEach(param -> {
                 String paramType = TypeUtils.fixGenericTypeFormat(param.getType().asString());
                 Parameter paramModel = new Parameter(paramType, param.getNameAsString());

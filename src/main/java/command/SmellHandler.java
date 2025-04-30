@@ -30,10 +30,6 @@ public class SmellHandler implements CommandHandler{
     }
 
     private boolean isRelated(String smell, String elementName) {
-        // 坏味道格式示例：
-        // "God Class: MyClass"
-        // "Inheritance Abuse: A <|-- B <|-- C"
-        // "Circular Dependency: X <.. Y <.. Z <.. X"
         return smell.split(":")[1].trim().contains(elementName);
     }
 }

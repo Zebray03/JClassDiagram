@@ -4,7 +4,6 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
-import diagram.generator.UMLGenerator;
 import diagram.model.ClassInfo;
 import diagram.parser.ClassParser;
 import diagram.parser.EnumParser;

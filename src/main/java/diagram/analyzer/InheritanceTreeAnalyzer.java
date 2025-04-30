@@ -27,19 +27,19 @@ public class InheritanceTreeAnalyzer implements Analyzer {
     private List<String> analyzeInheritanceTree(ClassInfo classInfo) {
         List<String> result = new ArrayList<>();
 
-        // 在处理继承树时，首先将 classInfo 本身作为继承链的起始节点
+        // 在处理继承树时，首先将classInfo本身作为继承链的起始节点
         List<String> inheritanceChains = new ArrayList<>();
         List<String> chains = buildInheritanceChains(classInfo);
         inheritanceChains.addAll(chains);
 
-        // 输出每条继承链并判断其深度
+        // 过深判断
         for (String chain : inheritanceChains) {
             if (chain.split(" <\\|-- ").length >= 6) {
                 result.add("Inheritance Abuse: " + chain);
             }
         }
 
-        // 获取所有子类并判断是否有 "过宽的继承"（子类数量 >= 10）
+        // 过宽判断
         List<ClassInfo> children = classInfo.getChildren();
         if (children.size() >= 10) {
             result.add("Too Many Children: " + classInfo.getName());
@@ -67,7 +67,7 @@ public class InheritanceTreeAnalyzer implements Analyzer {
                 buildInheritanceChainsRecursive(child, newChain, chains);
             }
         } else {
-            // 如果没有子类，说明到了继承链的末尾，保存当前链
+            // 如果没有子类，保存当前链
             chains.add(String.join(" <|-- ", currentChain));
         }
     }

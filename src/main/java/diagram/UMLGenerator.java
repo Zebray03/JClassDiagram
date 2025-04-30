@@ -1,6 +1,5 @@
-package diagram.generator;
+package diagram;
 
-import diagram.ClassDiagram;
 import diagram.model.ClassInfo;
 import diagram.model.Relationship;
 import diagram.parser.utils.TypeUtils;
@@ -52,26 +51,19 @@ public class UMLGenerator {
                 .forEach(method -> {
                     sb.append("    ")
                             .append(TypeUtils.getVisibilitySymbol(method.getVisibility()))
-                            .append(" "); // 可见性符号后的固定空格
+                            .append(" ");
 
                     List<String> parts = new ArrayList<>();
 
-                    // 处理泛型参数
                     if (!method.getGenericParameters().isEmpty()) {
                         parts.add(method.getGenericParameters());
                     }
-
-                    // 处理static修饰符
                     if (method.isStatic()) {
                         parts.add("{static}");
                     }
-
-                    // 处理abstract修饰符
                     if (method.isAbstract()) {
                         parts.add("{abstract}");
                     }
-
-                    // 拼接所有部分并添加空格
                     if (!parts.isEmpty()) {
                         sb.append(String.join(" ", parts)).append(" ");
                     }
@@ -93,15 +85,12 @@ public class UMLGenerator {
                 sb.append(rel.getTarget()).append(" <|.. ").append(rel.getSource()).append("\n");
                 break;
             case "DEPENDENCY":
-                // 处理依赖关系
                 sb.append(rel.getTarget()).append(" <.. ").append(rel.getSource()).append("\n");
                 break;
             case "ASSOCIATION":
-                // 处理关联关系
                 sb.append(rel.getTarget()).append(" <-- ").append(rel.getSource()).append("\n");
                 break;
             default:
-                // 其他类型的关系可以加入其他处理
                 break;
         }
     }

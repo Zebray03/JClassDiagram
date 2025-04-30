@@ -49,7 +49,6 @@ public class CircularDependencyAnalyzer implements Analyzer {
                         currentPath,
                         result
                 )) {
-                    // 检测到环后立即返回，确保只输出一个环
                     break;
                 }
             }
@@ -71,10 +70,8 @@ public class CircularDependencyAnalyzer implements Analyzer {
             List<String> cycle = new ArrayList<>(currentPath.subList(startIdx, currentPath.size()));
             cycle.add(current); // 闭合环
 
-            // 反转路径列表以匹配依赖方向（例如 [X, Y, Z] → [Z, Y, X]）
             Collections.reverse(cycle);
 
-            // 使用正确的依赖符号拼接路径
             String cyclePath = String.join(" <.. ", cycle);
             codeSmells.add("Circular Dependency: " + cyclePath);
             return true;

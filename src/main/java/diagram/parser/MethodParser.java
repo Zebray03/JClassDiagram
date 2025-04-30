@@ -14,22 +14,20 @@ public class MethodParser {
     public void parse(CallableDeclaration<?> method, ClassInfo classInfo, ClassDiagram diagram) {
         String sourceClass = classInfo.getName();
 
-        // 1. 解析返回类型（仅处理方法，构造函数没有返回类型）
-        if (method instanceof MethodDeclaration) {
-            MethodDeclaration methodDecl = (MethodDeclaration) method;
+        // 解析返回类型
+        if (method instanceof MethodDeclaration methodDecl) {
             String returnType = methodDecl.getType().asString();
             extractAndAddDependencies(returnType, sourceClass, diagram);
         }
 
-        // 2. 解析参数类型（方法和构造函数均需处理）
+        // 解析参数类型
         method.getParameters().forEach(param -> {
             String paramType = param.getType().asString();
             extractAndAddDependencies(paramType, sourceClass, diagram);
         });
 
-        // 3. 解析局部变量类型（仅处理方法的Body）
-        if (method instanceof MethodDeclaration) {
-            MethodDeclaration methodDecl = (MethodDeclaration) method;
+        // 解析局部变量类型
+        if (method instanceof MethodDeclaration methodDecl) {
             methodDecl.getBody().ifPresent(body -> {
                 body.findAll(VariableDeclarationExpr.class).forEach(expr -> {
                     expr.getVariables().forEach(var -> {
@@ -58,10 +56,9 @@ public class MethodParser {
         return !GenericUtils.isBuiltInType(target)
                 && !source.equals(target)
                 && !hasAssociation(source, target, diagram)
-                && !hasExistingDependency(source, target, diagram); // 检查依赖是否已存在
+                && !hasExistingDependency(source, target, diagram);
     }
 
-    // 检查是否已经存在相同的依赖关系
     private boolean hasExistingDependency(String source, String target, ClassDiagram diagram) {
         return diagram.getRelationships().stream()
                 .anyMatch(rel -> rel.getSource().equals(source)
